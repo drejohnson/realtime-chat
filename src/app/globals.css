@@ -10,7 +10,7 @@ body,
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 98%;
     --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
@@ -30,6 +30,9 @@ body,
 
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
+
+    --success: 116 46% 49%;
+    --success-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -62,6 +65,9 @@ body,
 
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
+
+    --success: 116 46% 49%;
+    --success-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
