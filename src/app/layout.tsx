@@ -1,7 +1,9 @@
 import "./globals.css";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import AuthStatus from "@/components/auth-status";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Suspense fallback="Loading...">
+          <AuthStatus />
+        </Suspense>
         {children}
         <Toaster />
       </body>

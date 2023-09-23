@@ -1,6 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -9,11 +14,9 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import Link from "next/link";
+import { useToast } from "../ui/use-toast";
 
 const FormSchema = z.object({
   userName: z.string().min(1, "Username is required").max(30),
@@ -24,6 +27,8 @@ const FormSchema = z.object({
 });
 
 export default function SignInForm() {
+  const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -32,8 +37,24 @@ export default function SignInForm() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof FormSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    const result = await signIn("credentials", {
+      redirect: false,
+      userName: values.userName,
+      password: values.password,
+    });
+
+    console.log(result);
+
+    if (result?.error) {
+      toast({
+        variant: "destructive",
+        description: result.error,
+      });
+    } else {
+      router.refresh();
+      router.push("/");
+    }
   };
 
   return (
@@ -71,8 +92,12 @@ export default function SignInForm() {
             )}
           />
         </div>
-        <Button className="w-full mt-6" type="submit">
-          Sign in
+        <Button
+          disabled={form.formState.isSubmitting || !form.formState.isValid}
+          className="mt-6"
+          type="submit"
+        >
+          Sign In
         </Button>
       </form>
       <p className="text-center text-sm text-gray-600 mt-2 mb-4">

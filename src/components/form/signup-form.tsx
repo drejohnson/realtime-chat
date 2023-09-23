@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
@@ -17,7 +16,6 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import LoadingDots from "../loading-dots";
 
 const FormSchema = z
   .object({
@@ -37,7 +35,6 @@ const FormSchema = z
   });
 
 export default function SignUpForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -53,8 +50,6 @@ export default function SignUpForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    setIsLoading(true);
-    console.log(values);
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -86,8 +81,6 @@ export default function SignUpForm() {
       }
     } catch (error) {
       console.error("Registration failed:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -182,8 +175,11 @@ export default function SignUpForm() {
             )}
           />
         </div>
-        <Button disabled={isLoading} className="mt-6" type="submit">
-          {isLoading && <LoadingDots />}
+        <Button
+          disabled={form.formState.isSubmitting || !form.formState.isValid}
+          className="mt-6"
+          type="submit"
+        >
           Sign Up
         </Button>
       </form>
